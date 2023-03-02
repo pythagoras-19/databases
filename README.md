@@ -1,2 +1,2 @@
 # databases
-MySQL database stuff 
+MySQL database programs
