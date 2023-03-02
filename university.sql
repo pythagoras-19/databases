@@ -2,14 +2,14 @@
 CREATE database CSC174;
 use CSC174;
 CREATE table Student(
-	SSN CHAR(9) NOT NULL,
+    SSN CHAR(9) NOT NULL,
     StudentName VARCHAR(100) NOT NULL,
     Address VARCHAR(50) NOT NULL,
     Email VARCHAR(50) NOT NULL,
     PRIMARY KEY (SSN)
 );
 CREATE TABLE TA(
-	SSN CHAR(9) NOT NULL,
+    SSN CHAR(9) NOT NULL,
     Salary DECIMAL(15,2) NOT NULL,
     PRIMARY KEY(SSN),
     FOREIGN KEY (SSN) REFERENCES Student(SSN)
@@ -21,13 +21,13 @@ CREATE TABLE Classroom(
     PRIMARY KEY (RoomNo, Building)
 );
 CREATE TABLE Instructor(
-	Title VARCHAR(100) NOT NULL,
+    Title VARCHAR(100) NOT NULL,
     InstructorID VARCHAR(50) NOT NULL,
     InstructorName VARCHAR(100) NOT NULL,
     PRIMARY KEY (InstructorID)
 );
 CREATE TABLE Course(
-	CourseNo VARCHAR(25) NOT NULL,
+    CourseNo VARCHAR(25) NOT NULL,
     CourseName VARCHAR(50) NOT NULL,
     NoOfStudents CHAR(25) NOT NULL,
     InstructorID VARCHAR(50) NOT NULL,
@@ -37,7 +37,7 @@ CREATE TABLE Course(
     FOREIGN KEY (TASSN) REFERENCES TA(SSN)
 );
 CREATE TABLE Enrolled(
-	SSN CHAR(9) NOT NULL,
+    SSN CHAR(9) NOT NULL,
     CourseNo VARCHAR(25) NOT NULL,
     Grade VARCHAR(2) NOT NULL,
     PRIMARY KEY(SSN, CourseNo),
@@ -45,13 +45,13 @@ CREATE TABLE Enrolled(
     FOREIGN KEY(SSN) REFERENCES Student(SSN)
 );
 CREATE TABLE OnlineCourse(
-	CourseNo VARCHAR(25) NOT NULL,
+    CourseNo VARCHAR(25) NOT NULL,
     URL VARCHAR(100) NOT NULL,
     PRIMARY KEY (CourseNo),
     FOREIGN KEY (CourseNo) REFERENCES Course(CourseNo)
 );
 CREATE TABLE InPersonCourse(
-	CourseNo VARCHAR(25) NOT NULL,
+    CourseNo VARCHAR(25) NOT NULL,
     RoomNo VARCHAR(50) NOT NULL,
     Building VARCHAR(50) NOT NULL,
     ClassTime VARCHAR(10) NOT NULL,
