@@ -1,5 +1,5 @@
 CREATE TABLE Student(
-    SSN CHAR(9) UNIQUE NOT NULL,
+    SSN CHAR(9) NOT NULL,
     StudentName VARCHAR(100) NOT NULL,
     Address VARCHAR(50) NOT NULL,
     Email VARCHAR(50) NOT NULL,
@@ -19,12 +19,12 @@ CREATE TABLE Classroom(
 );
 CREATE TABLE Instructor(
     Title VARCHAR(100) NOT NULL,
-    InstructorID VARCHAR(50) UNIQUE NOT NULL,
+    InstructorID VARCHAR(50) NOT NULL,
     InstructorName VARCHAR(100) NOT NULL,
     PRIMARY KEY (InstructorID)
 );
 CREATE TABLE Course(
-    CourseNo VARCHAR(25) UNIQUE NOT NULL,
+    CourseNo VARCHAR(25) NOT NULL,
     CourseName VARCHAR(50) NOT NULL,
     NoOfStudents CHAR(25) NOT NULL,
     InstructorID VARCHAR(50) NOT NULL,
