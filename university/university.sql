@@ -14,7 +14,7 @@ CREATE TABLE TA(
 CREATE TABLE Classroom(
     RoomNo VARCHAR(50) NOT NULL,
     Building VARCHAR(50) NOT NULL,
-    Capacity CHAR(10) NOT NULL,
+    Capacity INTEGER NOT NULL,
     PRIMARY KEY (RoomNo, Building)
 );
 CREATE TABLE Instructor(
@@ -26,7 +26,7 @@ CREATE TABLE Instructor(
 CREATE TABLE Course(
     CourseNo VARCHAR(25) NOT NULL,
     CourseName VARCHAR(50) NOT NULL,
-    NoOfStudents CHAR(25) NOT NULL,
+    NoOfStudents INTEGER,
     InstructorID VARCHAR(50) NOT NULL,
     TASSN CHAR(9),
     PRIMARY KEY (CourseNo),
@@ -51,13 +51,13 @@ CREATE TABLE InPersonCourse(
     CourseNo VARCHAR(25) NOT NULL,
     RoomNo VARCHAR(50) NOT NULL,
     Building VARCHAR(50) NOT NULL,
-    ClassTime VARCHAR(10) NOT NULL,
+    ClassTime TIME NOT NULL,
     PRIMARY KEY(CourseNo),
     FOREIGN KEY(RoomNo, Building) REFERENCES Classroom(RoomNo, Building)
 );
 -- inserts and views
 INSERT INTO Classroom VALUES(
-	'123A', 'Riverside', '100'
+	'123A', 'Riverside', 100
 );
 INSERT INTO Student VALUES(
 	'123456789', 'Michael Jordan', '150 Riverside St.', 'mjordan@gmail.com'
@@ -66,26 +66,27 @@ INSERT INTO Instructor VALUES(
 	'Professor', '1234A', 'Matt Damon'
 );
 INSERT INTO TA VALUES(
-	'123456789', '15000.00'
+	'123456789', 15000.00
 );
 INSERT INTO Course VALUES(
-	'CSC130', 'Data Structures and Algorithms', '100', '1234A', '123456789'
+	'CSC130', 'Data Structures and Algorithms', 100, '1234A', '123456789'
 );
 INSERT INTO Course VALUES(
-	'CSC131', 'Software Engineering', '85', '1234A', '123456789'
+	'CSC131', 'Software Engineering', 85, '1234A', '123456789'
 );
 INSERT INTO Course VALUES(
-	'CSC137', 'Computer Architecture', '95', '1234A', NULL
+	'CSC137', 'Computer Architecture', 95, '1234A', NULL
 );
 INSERT INTO InPersonCourse VALUES(
-	'CSC131', '123A', 'Riverside', '0800' 
+	'CSC131', '123A', 'Riverside', TIME('08:00:00')
 );
 INSERT INTO InPersonCourse VALUES(
-	'CSC137', '123A', 'Riverside', '0915' 
+	'CSC137', '123A', 'Riverside', TIME('09:15:00') 
 );
 INSERT INTO OnlineCourse VALUES(
 	'CSC130', 'https://zoom.us' 
 );
+
 -- VIEWS
 CREATE VIEW TAView AS
 SELECT S.SSN, S.StudentName, S.Address, S.Email, T.Salary
