@@ -140,7 +140,7 @@ CREATE VIEW Student_Grade_A AS
 SELECT S.SSN, Count(*) as "Number of A's gotten"
 FROM Student as S, Enrolled as E
 WHERE S.SSN = E.SSN AND S.SSN IN (
-    SELECT SSN
+	SELECT SSN
     FROM Enrolled
     WHERE Grade = "A"
     GROUP BY SSN
@@ -149,6 +149,28 @@ WHERE S.SSN = E.SSN AND S.SSN IN (
 GROUP BY S.SSN;
 
 SELECT * FROM Student_Grade_A;
+
+-- Functions 
+SELECT Course_Instructor('Data Structures and Algorithms') AS "Course Instructor";
+
+delimiter $
+CREATE FUNCTION Course_Instructor(course_name VARCHAR(50))
+RETURNS VARCHAR(100)
+READS SQL DATA
+BEGIN
+	DECLARE instructor_name VARCHAR(100);
+	SELECT I.InstructorName INTO instructor_name
+	FROM Course as C, Instructor as I
+	WHERE C.InstructorID = I.InstructorID and course_name = C.CourseName;
+	RETURN instructor_name;
+END $
+delimiter ;
+
+-- Drop functions
+DROP FUNCTION Course_Instructor;
+
+-- Procedures
+
 
 -- Drop views and tables
 DROP VIEW IF EXISTS Student_Grade_A;
