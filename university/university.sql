@@ -62,6 +62,24 @@ INSERT INTO Classroom VALUES(
 INSERT INTO Student VALUES(
 	'123456789', 'Michael Jordan', '150 Riverside St.', 'mjordan@gmail.com'
 );
+INSERT INTO Student VALUES(
+	'223456780', 'George Clooney', '151 Folsom St.', 'gclooney@gmail.com'
+);
+INSERT INTO Student VALUES(
+	'344456780', 'Leo Dicaprio', '153 El Dorado Hills St.', 'ldicaprio@gmail.com'
+);
+INSERT INTO Enrolled VALUES(
+	'223456780', 'CSC130', "A"
+);
+INSERT INTO Enrolled VALUES(
+	'223456780', 'CSC131', "A"
+);
+INSERT INTO Enrolled VALUES(
+	'344456780', 'CSC130', "B"
+);
+INSERT INTO Enrolled VALUES(
+	'344456780', 'CSC131', "A"
+);
 INSERT INTO Instructor VALUES(
 	'Professor', '1234A', 'Matt Damon'
 );
@@ -111,7 +129,30 @@ WHERE C.CourseNo = T.CourseNo;
 
 SELECT * FROM InPersonCourseView;
 
+CREATE VIEW TA_Course AS
+SELECT S.StudentName AS "TA Name" , S.Email AS "TA email", C.CourseName as "Course name"
+FROM TA as T, Course as C, Student as S
+WHERE T.SSN = C.TASSN AND T.SSN = S.SSN;
+
+SELECT * FROM TA_Course;
+
+CREATE VIEW Student_Grade_A AS
+SELECT S.SSN, Count(*) as "Number of A's gotten"
+FROM Student as S, Enrolled as E
+WHERE S.SSN = E.SSN AND S.SSN IN (
+    SELECT SSN
+    FROM Enrolled
+    WHERE Grade = "A"
+    GROUP BY SSN
+    HAVING COUNT(*) > 1
+)
+GROUP BY S.SSN;
+
+SELECT * FROM Student_Grade_A;
+
 -- Drop views and tables
+DROP VIEW IF EXISTS Student_Grade_A;
+DROP VIEW IF EXISTS TA_Course;
 DROP VIEW IF EXISTS TAView;
 DROP VIEW IF EXISTS OnlineCourseView;
 DROP VIEW IF EXISTS InPersonCourseView;
