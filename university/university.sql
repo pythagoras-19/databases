@@ -1,30 +1,30 @@
 CREATE TABLE Student(
-    SSN CHAR(9) NOT NULL,
+	SSN CHAR(9) NOT NULL,
     StudentName VARCHAR(100) NOT NULL,
     Address VARCHAR(50) NOT NULL,
     Email VARCHAR(50) NOT NULL,
     PRIMARY KEY (SSN)
 );
 CREATE TABLE TA(
-    SSN CHAR(9) NOT NULL,
+	SSN CHAR(9) NOT NULL,
     Salary DECIMAL(15,2) NOT NULL,
     PRIMARY KEY(SSN),
     FOREIGN KEY (SSN) REFERENCES Student(SSN)
 ); 
 CREATE TABLE Classroom(
-    RoomNo VARCHAR(50) NOT NULL,
+	RoomNo VARCHAR(50) NOT NULL,
     Building VARCHAR(50) NOT NULL,
     Capacity INTEGER NOT NULL,
     PRIMARY KEY (RoomNo, Building)
 );
 CREATE TABLE Instructor(
-    Title VARCHAR(100) NOT NULL,
+	Title VARCHAR(100) NOT NULL,
     InstructorID VARCHAR(50) NOT NULL,
     InstructorName VARCHAR(100) NOT NULL,
     PRIMARY KEY (InstructorID)
 );
 CREATE TABLE Course(
-    CourseNo VARCHAR(25) NOT NULL,
+	CourseNo VARCHAR(25) NOT NULL,
     CourseName VARCHAR(50) NOT NULL,
     NoOfStudents INTEGER,
     InstructorID VARCHAR(50) NOT NULL,
@@ -34,7 +34,7 @@ CREATE TABLE Course(
     FOREIGN KEY (TASSN) REFERENCES TA(SSN)
 );
 CREATE TABLE Enrolled(
-    SSN CHAR(9) NOT NULL,
+	SSN CHAR(9) NOT NULL,
     CourseNo VARCHAR(25) NOT NULL,
     Grade VARCHAR(2) NOT NULL,
     PRIMARY KEY(SSN, CourseNo),
@@ -42,13 +42,13 @@ CREATE TABLE Enrolled(
     FOREIGN KEY(SSN) REFERENCES Student(SSN)
 );
 CREATE TABLE OnlineCourse(
-    CourseNo VARCHAR(25) NOT NULL,
+	CourseNo VARCHAR(25) NOT NULL,
     URL VARCHAR(100) NOT NULL,
     PRIMARY KEY (CourseNo),
     FOREIGN KEY (CourseNo) REFERENCES Course(CourseNo)
 );
 CREATE TABLE InPersonCourse(
-    CourseNo VARCHAR(25) NOT NULL,
+	CourseNo VARCHAR(25) NOT NULL,
     RoomNo VARCHAR(50) NOT NULL,
     Building VARCHAR(50) NOT NULL,
     ClassTime TIME NOT NULL,
@@ -129,6 +129,7 @@ WHERE C.CourseNo = T.CourseNo;
 
 SELECT * FROM InPersonCourseView;
 
+-- A3 Q1
 CREATE VIEW TA_Course AS
 SELECT S.StudentName AS "TA Name" , S.Email AS "TA email", C.CourseName as "Course name"
 FROM TA as T, Course as C, Student as S
@@ -136,6 +137,7 @@ WHERE T.SSN = C.TASSN AND T.SSN = S.SSN;
 
 SELECT * FROM TA_Course;
 
+-- A3 Q2
 CREATE VIEW Student_Grade_A AS
 SELECT S.SSN, Count(*) as "Number of A's gotten"
 FROM Student as S, Enrolled as E
@@ -166,13 +168,39 @@ BEGIN
 END $
 delimiter ;
 
--- Drop functions
-DROP FUNCTION Course_Instructor;
-
 -- Procedures
+delimiter $
+CREATE PROCEDURE Get_TA(IN instructor_id VARCHAR(50), OUT TA_names VARCHAR(100))
+BEGIN
+    -- procedure body
+    SELECT DISTINCT S.StudentName into TA_names
+    FROM TA AS T, Instructor AS I, Course AS C, Student AS S
+    WHERE T.SSN = C.TASSN AND C.InstructorID = I.InstructorID AND S.SSN = T.SSN AND instructor_id = C.InstructorID;
+    
+END$ 
+delimiter ;
 
+CALL Get_TA('1234A', @ta_names);
+SELECT @ta_names;
+
+DELIMITER $
+CREATE PROCEDURE GetStudentCourse (IN course_num VARCHAR(25), OUT ssn_out CHAR(9), OUT StudentName VARCHAR(100), OUT Address VARCHAR(100), OUT Email VARCHAR(100))
+BEGIN
+    SELECT S.SSN, S.StudentName, S.Address, S.Email INTO ssn_out, StudentName, Address, Email
+    FROM Student AS S, Course as C, Enrolled as E
+    WHERE course_num = E.CourseNo AND E.CourseNo = C.CourseNo AND E.SSN = S.SSN;
+END $
+DELIMITER ;
+
+CALL GetStudentCourse('CSC130', @student_ssn, @student_name, @address, @email); 
+SELECT @student_info, @student_name, @address, @email;
+
+-- TODO: Write a cursor
 
 -- Drop views and tables
+DROP PROCEDURE IF EXISTS GetStudentCourse;
+DROP PROCEDURE IF EXISTS GET_TA;
+DROP FUNCTION Course_Instructor;
 DROP VIEW IF EXISTS Student_Grade_A;
 DROP VIEW IF EXISTS TA_Course;
 DROP VIEW IF EXISTS TAView;
@@ -185,4 +213,3 @@ DROP TABLE Enrolled;
 DROP TABLE Course;
 DROP TABLE Instructor;
 DROP TABLE TA;
-DROP TABLE Student;
