@@ -1,4 +1,3 @@
--- START OF Assignment 4
 CREATE database CSC174;
 use CSC174;
 CREATE TABLE Student(
