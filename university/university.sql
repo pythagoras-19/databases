@@ -1,3 +1,6 @@
+-- START OF Assignment 4
+CREATE database CSC174;
+use CSC174;
 CREATE TABLE Student(
     SSN CHAR(9) NOT NULL,
     StudentName VARCHAR(100) NOT NULL,
@@ -129,6 +132,7 @@ WHERE C.CourseNo = T.CourseNo;
 
 SELECT * FROM InPersonCourseView;
 
+-- A3 Q1
 CREATE VIEW TA_Course AS
 SELECT S.StudentName AS "TA Name" , S.Email AS "TA email", C.CourseName as "Course name"
 FROM TA as T, Course as C, Student as S
@@ -136,6 +140,7 @@ WHERE T.SSN = C.TASSN AND T.SSN = S.SSN;
 
 SELECT * FROM TA_Course;
 
+-- A3 Q2
 CREATE VIEW Student_Grade_A AS
 SELECT S.SSN, Count(*) as "Number of A's gotten"
 FROM Student as S, Enrolled as E
@@ -181,19 +186,29 @@ delimiter ;
 CALL Get_TA('1234A', @ta_names);
 SELECT @ta_names;
 
-DELIMITER $
-CREATE PROCEDURE GetStudentCourse (IN course_num VARCHAR(25), OUT ssn_out CHAR(9), OUT StudentName VARCHAR(100), OUT Address VARCHAR(100), OUT Email VARCHAR(100))
+DELIMITER $$
+CREATE PROCEDURE GetStudentCourse(IN CourseNo VARCHAR(25))
 BEGIN
-    SELECT S.SSN, S.StudentName, S.Address, S.Email INTO ssn_out, StudentName, Address, Email
-    FROM Student AS S, Course as C, Enrolled as E
-    WHERE course_num = E.CourseNo AND E.CourseNo = C.CourseNo AND E.SSN = S.SSN;
-END $
+    SELECT s.SSN, s.StudentName, s.Address, s.Email
+    FROM Student s
+    JOIN Enrolled e ON s.SSN = e.SSN
+    JOIN Course c ON e.CourseNo = c.CourseNo
+    WHERE c.CourseNo = CourseNo;
+END $$
 DELIMITER ;
 
-CALL GetStudentCourse('CSC130', @student_ssn, @student_name, @address, @email); 
-SELECT @student_info, @student_name, @address, @email;
+CALL GetStudentCourse('CSC130');
 
--- TODO: Write a cursor
+SELECT S.SSN, E.CourseNo, S.StudentName, S.Address, S.Email
+FROM Student AS S, Course as C, Enrolled as E
+WHERE E.CourseNo = 'CSC130' AND E.CourseNo = C.CourseNo AND E.SSN = S.SSN;
+
+-- procedure body FOR TEST
+SELECT DISTINCT S.StudentName
+FROM TA AS T, Instructor as I, Course as C, Student as S
+WHERE T.SSN = C.TASSN AND C.InstructorID = I.InstructorID AND S.SSN = T.SSN AND "1234A" = C.InstructorID;
+
+
 
 -- Drop views and tables
 DROP PROCEDURE IF EXISTS GetStudentCourse;
@@ -211,3 +226,4 @@ DROP TABLE Enrolled;
 DROP TABLE Course;
 DROP TABLE Instructor;
 DROP TABLE TA;
+DROP TABLE Student;
