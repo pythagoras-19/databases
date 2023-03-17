@@ -1,5 +1,3 @@
-CREATE database CSC174;
-use CSC174;
 CREATE TABLE Student(
     SSN CHAR(9) NOT NULL,
     StudentName VARCHAR(100) NOT NULL,
